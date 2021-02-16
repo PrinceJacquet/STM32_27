@@ -148,15 +148,22 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  HAL_I2C_Master_Transmit(&hi2c1, SHT31_ADDRESS, cmd_ms, 2, HAL_MAX_DELAY);
-	    HAL_I2C_Master_Receive(&hi2c1, SHT31_ADDRESS, mesure_sht31, 6, HAL_MAX_DELAY);
+	  HAL_I2C_Master_Receive(&hi2c1, SHT31_ADDRESS, mesure_sht31, 6, HAL_MAX_DELAY);
 
 	    uint16_t Temp = mesure_sht31[0] << 8 | mesure_sht31[1];
+	    uint16_t Hum = mesure_sht31[3] << 8 | mesure_sht31[4];
 
 	    double Tc = ((float) 175 * Temp / 65535 ) - 45;
+	    double Hc = ((float) 100 * Hum / 65535 ) - 45;
 
-	sprintf(val,"Temp °C-> %lf ", Tc);
+	sprintf(val,"Temp C-> %lf ", Tc);
 
 	lcd_position(&hi2c1, 0, 0);
+	lcd_print(&hi2c1, val);
+
+	sprintf(val,"Hum %% -> %lf ", Hc);
+
+	lcd_position(&hi2c1, 0, 1);
 	lcd_print(&hi2c1, val);
 
 	HAL_Delay(1000);
