@@ -27,6 +27,7 @@
 /* USER CODE BEGIN Includes */
 #include "stdio.h"
 #include "lib_lcd.h"
+#include "lib_SHT31.h"
 
 
 
@@ -68,7 +69,6 @@ int __io_putchar(int ch)
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-uint8_t count =0;
 I2C_HandleTypeDef hi2c1;
 UART_HandleTypeDef huart2;
 
@@ -82,11 +82,8 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-  HAL_StatusTypeDef ret;
-  uint8_t buf[12];
-  char val[20];
-  float temp_c;
-
+	char val[32]; // buffer afficheur LCD
+	uint8_t mesure_sht31[6]={0};
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -109,41 +106,35 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   MX_I2C1_Init();
+
   /* USER CODE BEGIN 2 */
-  MX_I2C1_Init();
-  buf[0] = 0x00;
-  buf[1] = 0x00;
-  buf[2] = 0x08;
-  buf[3] = 0xFF;
-  buf[4] = 0x01;
-  buf[5] = 0x20;
-  buf[6] = 0x08;
-  buf[7] = 0x01<<2;
-  buf[8] = 0x08;
-  buf[9] = ~(0x01<<2);
 
   rgb_lcd DataStruct;
-  DataStruct._displaycontrol = LCD_DISPLAYON ;
+  DataStruct._displaycontrol = LCD_DISPLAYOFF;
   DataStruct._displayfunction=LCD_2LINE ;
   DataStruct._displaymode=LCD_ENTRYLEFT ;
 
-  lcd_init(&hi2c1, &DataStruct);
-
+  lcd_init(&hi2c1, &DataStruct); //initialisation lcd
   lcd_print(&hi2c1, "Hello World");
 
-  HAL_Delay(10000);
-  clearlcd;
+  HAL_Delay(1000);
+  //clearlcd;
 
+  // print something on the screen
   for(int i = 10; i>=0;i--)
   {
-
 	  sprintf(val,"Hello World - %d ",i );
 
 	  lcd_position(&hi2c1, 0, 0);
 	  lcd_print(&hi2c1, val);
-	  HAL_Delay(1000);
 
+	  HAL_Delay(200);
   }
+
+  uint8_t cmd_ms [2] = {0};
+  cmd_ms[0] = (SHT31_MEAS_LOWREP >> 8) & 0xFF;
+  cmd_ms[1] = SHT31_MEAS_LOWREP & 0xFF;
+
 
   /* USER CODE END 2 */
 
@@ -156,14 +147,67 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  ret = HAL_I2C_Master_Transmit(&hi2c1, 0X62<<1, buf+6, 2, HAL_MAX_DELAY);
-	  HAL_Delay(500);
-	  ret = HAL_I2C_Master_Transmit(&hi2c1, 0X62<<1, buf+8, 2, HAL_MAX_DELAY);
-	  HAL_Delay(500);
+	  HAL_I2C_Master_Transmit(&hi2c1, SHT31_ADDRESS, cmd_ms, 2, HAL_MAX_DELAY);
+	    HAL_I2C_Master_Receive(&hi2c1, SHT31_ADDRESS, mesure_sht31, 6, HAL_MAX_DELAY);
+
+	    uint16_t Temp = mesure_sht31[0] << 8 | mesure_sht31[1];
+
+	    double Tc = ((float) 175 * Temp / 65535 ) - 45;
+
+	sprintf(val,"Temp °C-> %lf ", Tc);
+
+	lcd_position(&hi2c1, 0, 0);
+	lcd_print(&hi2c1, val);
+
+	HAL_Delay(1000);
+
 
   }
+
+
+
+
   /* USER CODE END 3 */
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
   * @brief System Clock Configuration
