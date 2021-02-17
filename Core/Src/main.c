@@ -115,9 +115,9 @@ int main(void)
   DataStruct._displaymode=LCD_ENTRYLEFT ;
 
   lcd_init(&hi2c1, &DataStruct); //initialisation lcd
-  lcd_print(&hi2c1, "Hello World");
+  lcd_print(&hi2c1, "test .gitignore");
 
-  HAL_Delay(1000);
+  HAL_Delay(5000);
   //clearlcd;
 
   // print something on the screen
