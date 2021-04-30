@@ -5,7 +5,10 @@ Devlop a porject using ST sofwares (CubeIDE, CubeMX,...), toolchain, devloppemen
 https://www.notion.so/Rapport-TP-de-Base-BE-R-alisation-syst-mes-5509ac4aeca546e6a022e06b935fc58d
 
 # Lien vers le rapport de BE:
-https://www.notion.so/Rapport-BE-R-alisation-syst-mes-fae96ea287064ff8bd3dbee7cd504092
+https://www.notion.so/Rapport-BE-R-alisation-syst-mes-fae96ea287064ff8bd3dbee7cd504092$
+
+# Diapos BE:
+https://drive.google.com/file/d/1Mvwkd53z-Ofz1KR5rvir3EvKx3LixA_i/view?usp=sharing
 
 # Vidéo présentation et test: 
 https://youtu.be/Y9t1PGNbQd0
