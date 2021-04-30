@@ -4,10 +4,5 @@ Devlop a porject using ST sofwares (CubeIDE, CubeMX,...), toolchain, devloppemen
 
 ## Directory structure 
 
-STM32_27
-        |_master
-        |
-        |_
-
-  
+STM32_27 contient
 4 branches 
